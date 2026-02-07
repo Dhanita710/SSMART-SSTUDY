@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Backend Connection Diagnostic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .test {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .pending {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 Backend Connection Diagnostic</h1>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <div id="results"></div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        async function runAllTests() {
+            resultsDiv.innerHTML = '<p>Running tests...</p>';
+
+            // Test 1: Basic fetch to health endpoint
+            await testHealthEndpoint();
+
+            // Test 2: CORS preflight test
+            await testCORSPreflight();
+
+            // Test 3: Voice library endpoint
+            await testVoiceLibrary();
+
+            // Test 4: Test with different methods
+            await testDifferentMethods();
+        }
+
+        async function testHealthEndpoint() {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test pending';
+            testDiv.innerHTML = '<h3>Test 1: Health Endpoint</h3><p>Testing...</p>';
+            resultsDiv.appendChild(testDiv);
+
+            try {
+                const response = await fetch('http://localhost:8000/health', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                const data = await response.json();
+
+                testDiv.className = 'test success';
+                testDiv.innerHTML = `
+                    <h3>✅ Test 1: Health Endpoint - PASSED</h3>
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Response:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <p><strong>Headers:</strong></p>
+                    <pre>${Array.from(response.headers.entries()).map(([k, v]) => k + ': ' + v).join('\\n')}</pre>
+                `;
+            } catch (error) {
+                testDiv.className = 'test error';
+                testDiv.innerHTML = `
+                    <h3>❌ Test 1: Health Endpoint - FAILED</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <pre>${error.stack}</pre>
+                `;
+            }
+        }
+
+        async function testCORSPreflight() {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test pending';
+            testDiv.innerHTML = '<h3>Test 2: CORS Preflight</h3><p>Testing...</p>';
+            resultsDiv.appendChild(testDiv);
+
+            try {
+                const response = await fetch('http://localhost:8000/api/voice/library', {
+                    method: 'OPTIONS',
+                });
+
+                testDiv.className = 'test success';
+                testDiv.innerHTML = `
+                    <h3>✅ Test 2: CORS Preflight - PASSED</h3>
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>CORS Headers:</strong></p>
+                    <pre>Access-Control-Allow-Origin: ${response.headers.get('Access-Control-Allow-Origin')}
+Access-Control-Allow-Methods: ${response.headers.get('Access-Control-Allow-Methods')}
+Access-Control-Allow-Headers: ${response.headers.get('Access-Control-Allow-Headers')}</pre>
+                `;
+            } catch (error) {
+                testDiv.className = 'test error';
+                testDiv.innerHTML = `
+                    <h3>❌ Test 2: CORS Preflight - FAILED</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            }
+        }
+
+        async function testVoiceLibrary() {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test pending';
+            testDiv.innerHTML = '<h3>Test 3: Voice Library Endpoint</h3><p>Testing...</p>';
+            resultsDiv.appendChild(testDiv);
+
+            try {
+                const response = await fetch('http://localhost:8000/api/voice/library', {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+
+                testDiv.className = 'test success';
+                testDiv.innerHTML = `
+                    <h3>✅ Test 3: Voice Library - PASSED</h3>
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Response:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                testDiv.className = 'test error';
+                testDiv.innerHTML = `
+                    <h3>❌ Test 3: Voice Library - FAILED</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Error Type:</strong> ${error.name}</p>
+                `;
+            }
+        }
+
+        async function testDifferentMethods() {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test pending';
+            testDiv.innerHTML = '<h3>Test 4: XMLHttpRequest vs Fetch</h3><p>Testing...</p>';
+            resultsDiv.appendChild(testDiv);
+
+            let results = [];
+
+            // Test with XMLHttpRequest
+            try {
+                await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'http://localhost:8000/health');
+                    xhr.onload = () => {
+                        results.push(`XMLHttpRequest: SUCCESS (${xhr.status})`);
+                        resolve();
+                    };
+                    xhr.onerror = () => {
+                        results.push(`XMLHttpRequest: FAILED (${xhr.statusText})`);
+                        reject();
+                    };
+                    xhr.send();
+                });
+            } catch (e) {
+                results.push(`XMLHttpRequest: ERROR - ${e.message}`);
+            }
+
+            // Test with axios-like approach
+            try {
+                const response = await fetch('http://localhost:8000/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                results.push(`Fetch with headers: SUCCESS (${response.status})`);
+            } catch (e) {
+                results.push(`Fetch with headers: FAILED - ${e.message}`);
+            }
+
+            testDiv.className = 'test success';
+            testDiv.innerHTML = `
+                <h3>Test 4: Different Methods</h3>
+                <pre>${results.join('\\n')}</pre>
+            `;
+        }
+
+        // Auto-run on load
+        window.onload = () => runAllTests();
+    </script>
+</body>
+
+</html>

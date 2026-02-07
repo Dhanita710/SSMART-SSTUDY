@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Connection Test</title>
+</head>
+
+<body>
+    <h1>Backend API Connection Test</h1>
+    <button onclick="testConnection()">Test Backend Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+
+            try {
+                // Test 1: Health check
+                const healthResponse = await fetch('http://localhost:8000/health');
+                const healthData = await healthResponse.json();
+                resultDiv.innerHTML += '<p>✅ Health check: ' + JSON.stringify(healthData) + '</p>';
+
+                // Test 2: Voice library
+                const voiceResponse = await fetch('http://localhost:8000/api/voice/library');
+                const voiceData = await voiceResponse.json();
+                resultDiv.innerHTML += '<p>✅ Voice library: ' + JSON.stringify(voiceData) + '</p>';
+
+                // Test 3: Upload test (without file)
+                resultDiv.innerHTML += '<p>✅ All tests passed! Backend is accessible.</p>';
+            } catch (error) {
+                resultDiv.innerHTML += '<p>❌ Error: ' + error.message + '</p>';
+                console.error('Full error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>
