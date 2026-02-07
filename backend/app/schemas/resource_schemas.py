@@ -38,7 +38,7 @@ class ResourceResponse(BaseModel):
     created_at: datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # ============ Resource Unit Schemas ============
@@ -73,7 +73,7 @@ class ResourceUnitResponse(BaseModel):
     created_at: datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # ============ Purchase Schemas ============
@@ -98,7 +98,7 @@ class PurchaseResponse(BaseModel):
     completed_at: Optional[datetime]
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # ============ Review Schemas ============
@@ -126,7 +126,7 @@ class ReviewResponse(BaseModel):
     updated_at: Optional[datetime]
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # ============ Wallet Schemas ============
@@ -142,7 +142,7 @@ class WalletResponse(BaseModel):
     updated_at: Optional[datetime]
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class WithdrawalRequest(BaseModel):

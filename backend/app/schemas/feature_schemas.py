@@ -22,7 +22,7 @@ class VoiceNoteResponse(BaseModel):
     processed_at: Optional[datetime]
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class StudySessionCreate(BaseModel):
@@ -42,7 +42,7 @@ class StudySessionResponse(BaseModel):
     ended_at: Optional[datetime]
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class LocationLogCreate(BaseModel):
@@ -67,7 +67,7 @@ class LocationLogResponse(BaseModel):
     study_date: datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class PlaylistCreate(BaseModel):
@@ -89,7 +89,7 @@ class PlaylistResponse(BaseModel):
     created_at: datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class BuddyMatchResponse(BaseModel):
@@ -104,4 +104,4 @@ class BuddyMatchResponse(BaseModel):
     created_at: datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
