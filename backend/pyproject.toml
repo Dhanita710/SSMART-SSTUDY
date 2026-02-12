@@ -1,0 +1,12 @@
+[project]
+name = "study-planner-backend"
+version = "1.0.0"
+description = "AI-powered Study Planner Backend"
+requires-python = ">=3.11.9,<3.12"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.python]
+version = "3.11.9"
